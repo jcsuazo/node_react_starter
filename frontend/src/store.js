@@ -10,6 +10,7 @@ import {
   userDeleteReducer,
   userUpdateReducer,
 } from './reducers/userReducers';
+import { toggleFooterReducer } from './reducers/pageReducer';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -19,6 +20,7 @@ const reducer = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   userUpdate: userUpdateReducer,
+  toggleFooter: toggleFooterReducer,
 });
 
 //Set user info to the state if it is on local storage

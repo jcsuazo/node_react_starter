@@ -6,12 +6,16 @@ import generateToken from '../utils/generateToken.js';
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (user && (await user.matchPassword(password))) {
+  const { logUserName, logPassword } = req.body;
+  const user = await User.findOne({
+    $or: [{ username: logUserName }, { email: logUserName }],
+  });
+  if (user && (await user.matchPassword(logPassword))) {
     res.json({
       _id: user._id,
-      name: user.name,
+      firstName: user._firstName,
+      lastName: user.lastName,
+      username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
@@ -25,14 +29,16 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  const userExists = await User.findOne({ email });
+  const { firstName, lastName, username, email, password } = req.body;
+  const userExists = await User.findOne({ $or: [{ username }, { email }] });
   if (userExists) {
     res.status(400);
     throw new Error('User already exists');
   }
   const user = await User.create({
-    name,
+    firstName,
+    lastName,
+    username,
     email,
     password,
   });

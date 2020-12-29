@@ -3,9 +3,21 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
     email: {
       type: String,
@@ -16,6 +28,22 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    profilePic: {
+      type: String,
+      default: '/images/profilePic.png',
+    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+      },
+    ],
+    retweets: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+      },
+    ],
     isAdmin: {
       type: Boolean,
       required: true,
