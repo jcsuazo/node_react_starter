@@ -4,8 +4,6 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
-import productRoutes from './routes/productRoutes.js';
-import orderRoutes from './routes/orderRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -28,10 +26,6 @@ app.get('/', (req, res) => {
 // ROTES
 //User rotes
 app.use('/api/users', userRoutes);
-//Products rotes
-app.use('/api/products', productRoutes);
-//Order rotes
-app.use('/api/orders', orderRoutes);
 //Upload Image rotes
 app.use('/api/upload', uploadRoutes);
 
