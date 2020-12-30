@@ -62,6 +62,48 @@ const likeAPost = asyncHandler(async (req, res) => {
   res.status(200).send(updatedPost);
 });
 
+// @desc    Retweet a post
+// @route   POST /api/posts/:id/retweet
+// @access  Private
+const retweetAPost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const user = req.session.user;
+
+  //Inserting or removing a the a retweeted post
+  let deletedPost = await Post.findOneAndDelete({
+    postedBy: user._id,
+    retweetData: id,
+  });
+
+  //If a post was remove pull if it was not addToSet
+  let option = deletedPost ? '$pull' : '$addToSet';
+
+  let repost = deletedPost;
+
+  if (repost == null) {
+    repost = await Post.create({ postedBy: user._id, retweetData: id });
+  }
+  //Inserting or removing a the post that was retweeted to the user
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      [option]: { retweets: repost._id },
+    },
+    { new: true },
+  );
+  req.session.user = updatedUser;
+  //Inserting or removing a the user that retweeted the post to the user
+  const updatedPost = await Post.findByIdAndUpdate(
+    id,
+    {
+      [option]: { retweetUsers: user._id },
+    },
+    { new: true },
+  );
+
+  res.status(200).send(updatedPost);
+});
+
 async function getPosts(filter) {
   const results = await Post.find(filter)
     .populate('postedBy')
@@ -70,4 +112,4 @@ async function getPosts(filter) {
     .catch((error) => console.log(error));
   return await User.populate(results, { path: 'retweetData.postedBy' });
 }
-export { getAllPosts, createPost, likeAPost };
+export { getAllPosts, createPost, likeAPost, retweetAPost };
