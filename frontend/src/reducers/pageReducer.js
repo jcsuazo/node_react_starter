@@ -5,7 +5,6 @@ export const toggleFooterReducer = (state = { footer: true }, action) => {
     case DISPLAY_FOOTER:
       return { footer: true };
     case HIDE_FOOTER:
-      console.log('hide');
       return { footer: false };
     default:
       return state;

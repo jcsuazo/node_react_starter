@@ -5,6 +5,7 @@ import store from './store';
 import './bootstrap.min.css';
 import './index.css';
 import './login.css';
+import './main.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

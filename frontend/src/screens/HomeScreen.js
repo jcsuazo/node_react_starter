@@ -1,24 +1,57 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { Row } from 'react-bootstrap';
 import Meta from '../components/Meta';
-
-const HomeScreen = ({ match }) => {
-  const keyword = match.params.keyword;
-  const pageNumber = match.params.pageNumber || 1;
+import SideBar from '../components/SideBar';
+import CreatePostForm from '../components/CreatePostForm';
+import { listAllPosts } from '../actions/postActions';
+import ListPosts from '../components/ListPosts';
+import Loader from '../components/Loader';
+const HomeScreen = ({ match, history }) => {
   const dispatch = useDispatch();
+  const keyword = match.params.keyword;
+  // const pageNumber = match.params.pageNumber || 1;
+  // const dispatch = useDispatch();
 
-  useEffect(() => {}, [dispatch, keyword, pageNumber]);
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const listPosts = useSelector((state) => state.listPosts);
+  const { loading: loadingPosts, posts } = listPosts;
+
+  const createPost = useSelector((state) => state.createPost);
+  const { post } = createPost;
+
+  const likePost = useSelector((state) => state.likePost);
+  const { likedPost } = likePost;
+
+  useEffect(() => {
+    if (!userInfo) {
+      history.push('/login');
+    }
+    dispatch(listAllPosts());
+  }, [dispatch, history, userInfo, post, likePost]);
 
   function showProducts() {
     return (
-      <>
-        <Row>
-          <h1>Home</h1>
-        </Row>
-      </>
+      <div className='wrapper'>
+        <div className='row row-full'>
+          <div className='col-2'>
+            <SideBar history={history} />
+          </div>
+          <div className='mainSectionContainer col-10 col-md-8 col-lg-6'>
+            <div className='titleContainer'>
+              <h1>Home</h1>
+            </div>
+            {userInfo && <CreatePostForm userLoggedIn={userInfo} />}
+            {loadingPosts ? <Loader /> : <ListPosts posts={posts} />}
+          </div>
+          <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>
+            <p>third column</p>
+          </div>
+        </div>
+      </div>
     );
   }
   return (

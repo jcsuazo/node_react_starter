@@ -13,11 +13,12 @@ const authUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(logPassword))) {
     res.json({
       _id: user._id,
-      firstName: user._firstName,
+      firstName: user.firstName,
       lastName: user.lastName,
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
+      profilePic: user.profilePic,
       token: generateToken(user._id),
     });
   } else {
@@ -48,6 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      profilePic: user.profilePic,
       token: generateToken(user._id),
     });
   } else {

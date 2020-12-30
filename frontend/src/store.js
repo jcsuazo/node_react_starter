@@ -10,6 +10,11 @@ import {
   userDeleteReducer,
   userUpdateReducer,
 } from './reducers/userReducers';
+import {
+  createPostReducer,
+  listPostsReducer,
+  likePostReducer,
+} from './reducers/postReducer';
 import { toggleFooterReducer } from './reducers/pageReducer';
 
 const reducer = combineReducers({
@@ -21,6 +26,9 @@ const reducer = combineReducers({
   userDelete: userDeleteReducer,
   userUpdate: userUpdateReducer,
   toggleFooter: toggleFooterReducer,
+  createPost: createPostReducer,
+  listPosts: listPostsReducer,
+  likePost: likePostReducer,
 });
 
 //Set user info to the state if it is on local storage
