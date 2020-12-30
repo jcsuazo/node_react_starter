@@ -11,8 +11,6 @@ import Loader from '../components/Loader';
 const HomeScreen = ({ match, history }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
-  // const pageNumber = match.params.pageNumber || 1;
-  // const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -26,12 +24,15 @@ const HomeScreen = ({ match, history }) => {
   const likePost = useSelector((state) => state.likePost);
   const { likedPost } = likePost;
 
+  const retweetedPost = useSelector((state) => state.retweetedPost);
+  const { retweetePost } = retweetedPost;
+
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     }
     dispatch(listAllPosts());
-  }, [dispatch, history, userInfo, post, likePost]);
+  }, [dispatch, history, userInfo, post, likedPost, retweetePost]);
 
   function showProducts() {
     return (

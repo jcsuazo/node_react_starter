@@ -9,6 +9,9 @@ import {
   POST_LIKE_REQUEST,
   POST_LIKE_SUCCESS,
   POST_LIKE_FAIL,
+  POST_RETWEET_REQUEST,
+  POST_RETWEET_SUCCESS,
+  POST_RETWEET_FAIL,
 } from '../constants/postConstans';
 
 export const createAPost = (postPayload) => async (dispatch, getState) => {
@@ -94,6 +97,42 @@ export const likeAPost = (postId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: POST_LIKE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const retweetAPost = (postId) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: POST_RETWEET_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    console.log(userInfo.token);
+    const config = {
+      headers: {
+        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/posts/${postId}/retweet`,
+      {},
+      config,
+    );
+    dispatch({
+      type: POST_RETWEET_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: POST_RETWEET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

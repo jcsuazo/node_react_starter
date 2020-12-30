@@ -1,23 +1,46 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { likeAPost } from '../actions/postActions';
+import { likeAPost, retweetAPost } from '../actions/postActions';
 const ListPosts = ({ posts }) => {
   const dispatch = useDispatch();
-  let retweetText = '';
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
+  //HELPER
+  function isRetweet(post) {
+    return post.retweetData !== undefined;
+  }
   // HANDELERS
   function likePostHandeler(PostId) {
     dispatch(likeAPost(PostId));
+  }
+  function retweetPostHandeler(post) {
+    if (isRetweet) {
+      dispatch(retweetAPost(post.retweetData._id));
+    } else {
+      dispatch(retweetAPost(post._id));
+    }
   }
   return (
     <>
       {posts &&
         posts.map((post) => (
           <div className='post' key={post._id}>
-            <div className='postActionContainer'>{retweetText}</div>
+            <div className='postActionContainer'>
+              {isRetweet(post) && (
+                <span>
+                  <i className='fas fa-retweet'></i>
+                  Retweeted by{' '}
+                  <Link
+                    to={`/profile/${isRetweet(post) && post.postedBy.username}`}
+                    className='displayName'
+                  >
+                    @{post.postedBy.username}
+                  </Link>
+                </span>
+              )}
+            </div>
             <div className='mainContentContainer'>
               <div className='userImageContainer'>
                 <img src={post.postedBy.profilePic} alt='profile' />
@@ -34,7 +57,9 @@ const ListPosts = ({ posts }) => {
                   <span className='date'>{post.createdAt}</span>
                 </div>
                 <div className='postBody'>
-                  <span>{post.content}</span>
+                  <span>
+                    {isRetweet(post) ? post.retweetData.content : post.content}
+                  </span>
                 </div>
                 <div className='postFooter'>
                   <div className='postButtonContainer'>
@@ -44,12 +69,23 @@ const ListPosts = ({ posts }) => {
                   </div>
                   <div className='postButtonContainer green'>
                     <button
+                      onClick={() => retweetPostHandeler(post)}
                       className={`retweetButton ${
-                        post.retweetUsers.includes(userInfo._id) ? 'active' : ''
+                        isRetweet(post)
+                          ? post.retweetData.retweetUsers.includes(userInfo._id)
+                            ? 'active'
+                            : ''
+                          : post.retweetUsers.includes(userInfo._id)
+                          ? 'active'
+                          : ''
                       }`}
                     >
                       <i className='fas fa-retweet'></i>
-                      <span>{post.retweetUsers.length || ''}</span>
+                      <span>
+                        {isRetweet(post)
+                          ? post.retweetData.retweetUsers.length || ''
+                          : post.retweetUsers.length || ''}
+                      </span>
                     </button>
                   </div>
                   <div className='postButtonContainer red'>

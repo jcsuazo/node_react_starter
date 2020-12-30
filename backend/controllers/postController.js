@@ -39,6 +39,7 @@ const createPost = asyncHandler(async (req, res) => {
 const likeAPost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = req.user;
+
   let isLiked = user.likes && user.likes.includes(id);
 
   let option = isLiked ? '$pull' : '$addToSet';
@@ -67,8 +68,7 @@ const likeAPost = asyncHandler(async (req, res) => {
 // @access  Private
 const retweetAPost = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const user = req.session.user;
-
+  const user = req.user;
   //Inserting or removing a the a retweeted post
   let deletedPost = await Post.findOneAndDelete({
     postedBy: user._id,
@@ -91,7 +91,6 @@ const retweetAPost = asyncHandler(async (req, res) => {
     },
     { new: true },
   );
-  req.session.user = updatedUser;
   //Inserting or removing a the user that retweeted the post to the user
   const updatedPost = await Post.findByIdAndUpdate(
     id,

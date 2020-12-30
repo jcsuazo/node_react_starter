@@ -8,6 +8,9 @@ import {
   POST_LIKE_REQUEST,
   POST_LIKE_SUCCESS,
   POST_LIKE_FAIL,
+  POST_RETWEET_REQUEST,
+  POST_RETWEET_SUCCESS,
+  POST_RETWEET_FAIL,
 } from '../constants/postConstans';
 
 export const createPostReducer = (state = { post: {} }, action) => {
@@ -22,6 +25,7 @@ export const createPostReducer = (state = { post: {} }, action) => {
       return state;
   }
 };
+
 export const listPostsReducer = (state = { posts: [] }, action) => {
   switch (action.type) {
     case POST_LIST_REQUEST:
@@ -34,6 +38,7 @@ export const listPostsReducer = (state = { posts: [] }, action) => {
       return state;
   }
 };
+
 export const likePostReducer = (
   state = { success: false, likedPost: {} },
   action,
@@ -44,6 +49,22 @@ export const likePostReducer = (
     case POST_LIKE_SUCCESS:
       return { loading: false, success: true, likedPost: action.payload };
     case POST_LIKE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const retweetedPostReducer = (
+  state = { success: false, retweetedPost: {} },
+  action,
+) => {
+  switch (action.type) {
+    case POST_RETWEET_REQUEST:
+      return { loading: true };
+    case POST_RETWEET_SUCCESS:
+      return { loading: false, success: true, retweetePost: action.payload };
+    case POST_RETWEET_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;
