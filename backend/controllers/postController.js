@@ -15,14 +15,13 @@ const getAllPosts = asyncHandler(async (req, res) => {
 // @route   POST /api/posts
 // @access  Private
 const createPost = asyncHandler(async (req, res) => {
-  const { content } = req.body;
-  if (!content) {
+  if (!req.body.content) {
     console.log('Content param not sent with request');
     return res.sendStatus(400);
   }
   try {
     const newPost = await Post.create({
-      content,
+      ...req.body,
       postedBy: req.user._id,
     });
     const newPostAndUser = await User.populate(newPost, { path: 'postedBy' });
@@ -102,13 +101,15 @@ const retweetAPost = asyncHandler(async (req, res) => {
 
   res.status(200).send(updatedPost);
 });
-
 async function getPosts(filter) {
-  const results = await Post.find(filter)
+  let results = await Post.find(filter)
     .populate('postedBy')
+    .populate('replyTo')
     .populate('retweetData')
     .sort({ createdAt: -1 })
     .catch((error) => console.log(error));
+  results = await User.populate(results, { path: 'replyTo.postedBy' });
+  // results = await Post.populate(results, { path: 'replyTo.retweetData' });
   return await User.populate(results, { path: 'retweetData.postedBy' });
 }
 export { getAllPosts, createPost, likeAPost, retweetAPost };

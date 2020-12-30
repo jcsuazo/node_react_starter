@@ -11,9 +11,7 @@
   --green: rgba(23, 191, 99);
   --greenBackground: rgba(23, 191, 99, 0.1);
 }
-body {
-  /* background-color: gray; */
-}
+
 .row-full {
   min-height: 100vh;
 }
@@ -196,4 +194,11 @@ button span {
   font-size: 13px;
   color: var(--greyText);
   margin-bottom: 5px;
+}
+
+.replyFlag {
+  margin-bottom: 5px;
+}
+.replyFlag a {
+  color: var(--blue);
 }

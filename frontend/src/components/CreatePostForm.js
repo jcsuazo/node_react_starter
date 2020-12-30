@@ -18,7 +18,6 @@ const CreatePostForm = ({ userLoggedIn }) => {
   //Handeler
   function submitHandler(e) {
     e.preventDefault();
-    console.log('enter----------------');
     dispatch(createAPost({ content }));
   }
 
