@@ -15,8 +15,18 @@ const getAllPosts = asyncHandler(async (req, res) => {
 // @access  Private
 const getPostDetails = asyncHandler(async (req, res) => {
   let postId = req.params.id;
-  const results = await getPosts({ _id: postId });
-  res.status(200).send(results[0]);
+  let postData = await getPosts({ _id: postId });
+  postData = postData[0];
+  const results = {
+    postData: postData,
+  };
+  if (postData.replyTo !== undefined) {
+    let replyTo = await getPosts({ _id: postData.replyTo._id });
+
+    results.replyTo = replyTo[0];
+  }
+  results.replies = await getPosts({ replyTo: postId });
+  res.status(200).send(results);
 });
 
 // @desc    Create new post

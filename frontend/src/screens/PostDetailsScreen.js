@@ -10,18 +10,27 @@ const PostDetailsScreen = ({ match, history }) => {
   const dispatch = useDispatch();
   const id = match.params.id;
 
+  const createPost = useSelector((state) => state.createPost);
+  const { post: postChanges } = createPost;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const postDetails = useSelector((state) => state.postDetails);
   const { loading, post, success } = postDetails;
 
+  const likePost = useSelector((state) => state.likePost);
+  const { likedPost } = likePost;
+
+  const retweetedPost = useSelector((state) => state.retweetedPost);
+  const { retweetePost } = retweetedPost;
+
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     }
     dispatch(getPostDetails(id));
-  }, [dispatch, id, history, userInfo]);
+  }, [dispatch, id, history, userInfo, postChanges, likedPost, retweetePost]);
 
   function showPostDetails() {
     return (
@@ -38,7 +47,33 @@ const PostDetailsScreen = ({ match, history }) => {
             {loading ? (
               <Loader />
             ) : (
-              success && <Post history={history} key={post._id} post={post} />
+              success &&
+              (post.replyTo !== undefined ? (
+                <>
+                  <Post history={history} post={post.replyTo} />
+                  <Post
+                    history={history}
+                    post={post.postData}
+                    largeFont={true}
+                  />
+                  {post.replies &&
+                    post.replies.map((reply) => (
+                      <Post key={reply._id} history={history} post={reply} />
+                    ))}
+                </>
+              ) : (
+                <>
+                  <Post
+                    history={history}
+                    post={post.postData}
+                    largeFont={true}
+                  />
+                  {post.replies &&
+                    post.replies.map((reply) => (
+                      <Post key={reply._id} history={history} post={reply} />
+                    ))}
+                </>
+              ))
             )}
           </div>
           <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>

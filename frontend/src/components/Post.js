@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { likeAPost, retweetAPost, createAPost } from '../actions/postActions';
 import { Button, Modal } from 'react-bootstrap';
-const Post = ({ post, isModel = false, history }) => {
+const Post = ({ post, isModel = false, history, largeFont = false }) => {
   const dispatch = useDispatch();
 
   const [modelContent, setModelContent] = useState('');
@@ -92,7 +92,11 @@ const Post = ({ post, isModel = false, history }) => {
         </form>
       </Modal>
 
-      <div className='post' key={post._id} onClick={(e) => postHandeler(e)}>
+      <div
+        className={`post ${largeFont ? 'largeFont' : ''}`}
+        key={post._id}
+        onClick={(e) => postHandeler(e)}
+      >
         <div className='postActionContainer'>
           {isRetweet(post) && (
             <span>
