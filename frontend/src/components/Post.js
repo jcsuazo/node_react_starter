@@ -7,7 +7,8 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
   const dispatch = useDispatch();
 
   const [modelContent, setModelContent] = useState('');
-  const [show, setShow] = useState(false);
+  const [replyShow, setReplyShow] = useState(false);
+  const [deletePostShow, setDeletePostShow] = useState(false);
   const [modalPost, setmodalPost] = useState(null);
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -16,12 +17,107 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
   function isRetweet(post) {
     return post.retweetData !== undefined;
   }
+  const handleClose = (type) => {
+    switch (type) {
+      case 'reply':
+        setReplyShow(false);
+        break;
+      case 'deletePost':
+        setDeletePostShow(false);
+        break;
+
+      default:
+        setReplyShow(false);
+        break;
+    }
+    setmodalPost(null);
+  };
   // HTML
 
   const deletePostButton = (
-    <button>
+    <button onClick={() => toogleModal(post, 'deletePost')}>
       <i className='fas fa-times'></i>
     </button>
+  );
+
+  const replyModal = (
+    <Modal show={replyShow} onHide={() => handleClose('reply')}>
+      <form onSubmit={(e) => submitHandler(e, 'reply')}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {modalPost && <Post post={modalPost} isModel={true} />}
+          <div className='postFormContainer'>
+            <div className='userImageContainer'>
+              <img src={userInfo.profilePic} alt="User's profile" />
+            </div>
+            <div className='textareaContainer'>
+              <textarea
+                id='replyTextarea'
+                placeholder="Wha's happening?"
+                onChange={(e) => setModelContent(e.target.value)}
+              ></textarea>
+              <div className='buttonsContainer'></div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={() => handleClose('reply')}>
+            Close
+          </Button>
+          <Button
+            type='submit'
+            id='submitReplyButton'
+            style={{
+              background: '#1fa2f1',
+              border: 'none',
+              borderRadius: '40px',
+              padding: '7px 15px',
+            }}
+            disabled={modelContent.trim() === ''}
+          >
+            Reply
+          </Button>
+        </Modal.Footer>
+      </form>
+    </Modal>
+  );
+  const deletePostModal = (
+    <Modal show={deletePostShow} onHide={() => handleClose('deletePost')}>
+      <form onSubmit={submitHandler}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Post?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {modalPost && <Post post={modalPost} isModel={true} />}
+          <div className='postFormContainer'>
+            <div className='align-content-center align-middle d-flex h-100 justify-content-center w-100'>
+              <p className='deletePostMessage font-weight-bold m-0 text-danger'>
+                Are you sure that you want to delete this post?
+              </p>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={() => handleClose('deletePost')}>
+            Close
+          </Button>
+          <Button
+            type='submit'
+            variant='danger'
+            id='submitReplyButton'
+            style={{
+              border: 'none',
+              borderRadius: '40px',
+              padding: '7px 15px',
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </form>
+    </Modal>
   );
 
   // HANDELERS
@@ -42,63 +138,44 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
     }
   }
 
-  const handleClose = () => {
-    setShow(false);
-    setmodalPost(null);
-  };
-  function toogleModal(post) {
+  function toogleModal(post, type) {
     setmodalPost(post);
-    setShow(true);
+    switch (type) {
+      case 'reply':
+        setReplyShow(true);
+
+        break;
+      case 'deletePost':
+        setDeletePostShow(true);
+        break;
+
+      default:
+        setReplyShow(true);
+        break;
+    }
   }
-  function submitHandler(e) {
+  function submitHandler(e, type) {
     e.preventDefault();
-    dispatch(createAPost({ content: modelContent, replyTo: modalPost._id }));
-    handleClose();
+    switch (type) {
+      case 'reply':
+        dispatch(
+          createAPost({ content: modelContent, replyTo: modalPost._id }),
+        );
+        setReplyShow(false);
+        break;
+      case 'deletePost':
+        setDeletePostShow(false);
+        break;
+
+      default:
+        setReplyShow(false);
+        break;
+    }
   }
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
-        <form onSubmit={submitHandler}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {modalPost && <Post post={modalPost} isModel={true} />}
-            <div className='postFormContainer'>
-              <div className='userImageContainer'>
-                <img src={userInfo.profilePic} alt="User's profile" />
-              </div>
-              <div className='textareaContainer'>
-                <textarea
-                  id='replyTextarea'
-                  placeholder="Wha's happening?"
-                  onChange={(e) => setModelContent(e.target.value)}
-                ></textarea>
-                <div className='buttonsContainer'></div>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant='secondary' onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              type='submit'
-              id='submitReplyButton'
-              style={{
-                background: '#1fa2f1',
-                border: 'none',
-                borderRadius: '40px',
-                padding: '7px 15px',
-              }}
-              disabled={modelContent.trim() === ''}
-            >
-              Reply
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-
+      {replyModal}
+      {deletePostModal}
       <div
         className={`post ${largeFont ? 'largeFont' : ''}`}
         key={post._id}
@@ -132,7 +209,9 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
               </Link>
               <span className='username'>@{post.postedBy.username}</span>
               <span className='date'>{post.createdAt}</span>
-              {post.postedBy._id === userInfo._id && deletePostButton}
+              {post.postedBy._id === userInfo._id &&
+                !isModel &&
+                deletePostButton}
             </div>
             {post.replyTo && (
               <div className='replyFlag'>
@@ -160,7 +239,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
                   <button
                     data-toggle='modal'
                     data-target='#replyModal'
-                    onClick={() => toogleModal(post)}
+                    onClick={() => toogleModal(post, 'reply')}
                   >
                     <i className='far fa-comment'></i>
                   </button>

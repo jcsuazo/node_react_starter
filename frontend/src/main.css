@@ -213,3 +213,6 @@ button span {
 .postContenteContainer .header .date {
   flex: 1;
 }
+.deletePostMessage {
+  font-size: 18px;
+}
