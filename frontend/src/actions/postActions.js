@@ -81,7 +81,6 @@ export const likeAPost = (postId) => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState();
-    console.log(userInfo.token);
     const config = {
       headers: {
         // 'Content-Type': 'application/json',
@@ -113,7 +112,6 @@ export const retweetAPost = (postId) => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState();
-    console.log(userInfo.token);
     const config = {
       headers: {
         // 'Content-Type': 'application/json',

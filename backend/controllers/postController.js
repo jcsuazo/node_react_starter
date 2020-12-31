@@ -10,6 +10,14 @@ const getAllPosts = asyncHandler(async (req, res) => {
   const results = await getPosts({});
   res.status(200).send(results);
 });
+// @desc    Get a post details
+// @route   GET /api/posts/:id
+// @access  Private
+const getPostDetails = asyncHandler(async (req, res) => {
+  let postId = req.params.id;
+  const results = await getPosts({ _id: postId });
+  res.status(200).send(results[0]);
+});
 
 // @desc    Create new post
 // @route   POST /api/posts
@@ -101,6 +109,7 @@ const retweetAPost = asyncHandler(async (req, res) => {
 
   res.status(200).send(updatedPost);
 });
+
 async function getPosts(filter) {
   let results = await Post.find(filter)
     .populate('postedBy')
@@ -112,4 +121,4 @@ async function getPosts(filter) {
   // results = await Post.populate(results, { path: 'replyTo.retweetData' });
   return await User.populate(results, { path: 'retweetData.postedBy' });
 }
-export { getAllPosts, createPost, likeAPost, retweetAPost };
+export { getAllPosts, createPost, likeAPost, retweetAPost, getPostDetails };

@@ -14,6 +14,7 @@ import {
   createPost,
   likeAPost,
   retweetAPost,
+  getPostDetails,
 } from '../controllers/postController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 const router = express.Router();
@@ -27,6 +28,11 @@ router.route('/:id/like').put(protect, likeAPost);
 // @route   POST /api/posts/:id/retweet
 // @access  Private
 router.route('/:id/retweet').put(protect, retweetAPost);
+
+// @desc    Get a post details
+// @route   GET /api/posts/:id
+// @access  Private
+router.route('/:id').post(protect, getPostDetails);
 
 // @desc    Get all posts | Create new post
 // @route   GET /api/posts | POST /api/posts

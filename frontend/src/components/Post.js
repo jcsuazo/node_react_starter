@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { likeAPost, retweetAPost } from '../actions/postActions';
 
-const Post = ({ post, handeler, isModel = false }) => {
+const Post = ({ post, handeler, isModel = false, history }) => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -18,18 +18,21 @@ const Post = ({ post, handeler, isModel = false }) => {
     dispatch(likeAPost(PostId));
   }
   function retweetPostHandeler(post) {
-    if (isRetweet) {
+    if (isRetweet(post)) {
       dispatch(retweetAPost(post.retweetData._id));
     } else {
       dispatch(retweetAPost(post._id));
     }
   }
-  //   function toogleModal(post) {
-  //     setShow(true);
-  //     setmodalPostId(post);
-  //   }
+  function postHandeler(e) {
+    e.preventDefault();
+    if (e.target.nodeName !== 'BUTTON' && e.target.nodeName !== 'A') {
+      history.push(`/post/${post._id}`);
+    }
+  }
+
   return (
-    <div className='post' key={post._id}>
+    <div className='post' key={post._id} onClick={(e) => postHandeler(e)}>
       <div className='postActionContainer'>
         {isRetweet(post) && (
           <span>

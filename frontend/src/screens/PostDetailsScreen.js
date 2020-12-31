@@ -9,7 +9,7 @@ import CreatePostForm from '../components/CreatePostForm';
 import { listAllPosts } from '../actions/postActions';
 import ListPosts from '../components/ListPosts';
 import Loader from '../components/Loader';
-const HomeScreen = ({ match, history }) => {
+const PostDetailsScreen = ({ match, history }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
 
@@ -35,7 +35,7 @@ const HomeScreen = ({ match, history }) => {
     dispatch(listAllPosts());
   }, [dispatch, history, userInfo, post, likedPost, retweetePost]);
 
-  function showHomeScreen() {
+  function showPostDetails() {
     return (
       <div className='wrapper'>
         <div className='row row-full'>
@@ -44,14 +44,14 @@ const HomeScreen = ({ match, history }) => {
           </div>
           <div className='mainSectionContainer col-10 col-md-8 col-lg-6'>
             <div className='titleContainer'>
-              <h1>Home</h1>
+              <h1>View Post</h1>
             </div>
-            {userInfo && <CreatePostForm userLoggedIn={userInfo} />}
-            {loadingPosts ? (
+            {/* {userInfo && <CreatePostForm userLoggedIn={userInfo} />} */}
+            {/* {loadingPosts ? (
               <Loader />
             ) : (
               <ListPosts posts={posts} history={history} />
-            )}
+            )} */}
           </div>
           <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>
             <p>third column</p>
@@ -64,7 +64,7 @@ const HomeScreen = ({ match, history }) => {
     <>
       <Meta />
       {!keyword ? (
-        showHomeScreen()
+        showPostDetails()
       ) : (
         <Link to='/' className='btn btn-light'>
           Go back
@@ -74,4 +74,4 @@ const HomeScreen = ({ match, history }) => {
   );
 };
 
-export default HomeScreen;
+export default PostDetailsScreen;

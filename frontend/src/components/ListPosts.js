@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal } from 'react-bootstrap';
 import Post from '../components/Post';
 import { createAPost } from '../actions/postActions';
-const ListPosts = ({ posts }) => {
+const ListPosts = ({ posts, history }) => {
   const dispatch = useDispatch();
 
   const [modelContent, setModelContent] = useState('');
@@ -72,7 +72,12 @@ const ListPosts = ({ posts }) => {
       </Modal>
       {posts &&
         posts.map((post) => (
-          <Post key={post._id} post={post} handeler={toogleModal} />
+          <Post
+            history={history}
+            key={post._id}
+            post={post}
+            handeler={toogleModal}
+          />
         ))}
     </>
   );

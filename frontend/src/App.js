@@ -8,6 +8,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import PostDetailsScreen from './screens/PostDetailsScreen';
 // import { showFooter } from './actions/pageActions';
 const App = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const App = () => {
     <Router>
       <main className=''>
         <Route path='/login' component={LoginScreen} />
+        <Route path='/post/:id' component={PostDetailsScreen} />
         <Route path='/register' component={RegisterScreen} />
         <Route path='/profile' component={ProfileScreen} />
         <Route path='/admin/userlist' component={UserListScreen} />
