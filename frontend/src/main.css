@@ -206,3 +206,10 @@ button span {
 .post.largeFont .postFooter {
   font-size: 23px;
 }
+
+.postContenteContainer .header {
+  display: flex;
+}
+.postContenteContainer .header .date {
+  flex: 1;
+}

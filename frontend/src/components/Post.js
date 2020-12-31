@@ -16,6 +16,13 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
   function isRetweet(post) {
     return post.retweetData !== undefined;
   }
+  // HTML
+
+  const deletePostButton = (
+    <button>
+      <i className='fas fa-times'></i>
+    </button>
+  );
 
   // HANDELERS
   function likePostHandeler(PostId) {
@@ -113,7 +120,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
         </div>
         <div className='mainContentContainer'>
           <div className='userImageContainer'>
-            {/* <img src={post.postedBy.profilePic} alt='profile' /> */}
+            <img src={post.postedBy.profilePic} alt='profile' />
           </div>
           <div className='postContenteContainer'>
             <div className='header'>
@@ -125,6 +132,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
               </Link>
               <span className='username'>@{post.postedBy.username}</span>
               <span className='date'>{post.createdAt}</span>
+              {post.postedBy._id === userInfo._id && deletePostButton}
             </div>
             {post.replyTo && (
               <div className='replyFlag'>

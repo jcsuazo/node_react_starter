@@ -10,6 +10,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
   const results = await getPosts({});
   res.status(200).send(results);
 });
+
 // @desc    Get a post details
 // @route   GET /api/posts/:id
 // @access  Private
@@ -27,6 +28,21 @@ const getPostDetails = asyncHandler(async (req, res) => {
   }
   results.replies = await getPosts({ replyTo: postId });
   res.status(200).send(results);
+});
+
+// @desc    Get a post details
+// @route   GET /api/posts/:id
+// @access  Private
+const deleteAPost = asyncHandler(async (req, res) => {
+  let postId = req.params.id;
+  const post = await Post.findById(postId);
+
+  if (post.postedBy._id === req.user._id) {
+    await post.remove();
+    res.sendStatus(202);
+  } else {
+    res.send(401);
+  }
 });
 
 // @desc    Create new post
@@ -131,4 +147,11 @@ async function getPosts(filter) {
   // results = await Post.populate(results, { path: 'replyTo.retweetData' });
   return await User.populate(results, { path: 'retweetData.postedBy' });
 }
-export { getAllPosts, createPost, likeAPost, retweetAPost, getPostDetails };
+export {
+  getAllPosts,
+  createPost,
+  likeAPost,
+  retweetAPost,
+  getPostDetails,
+  deleteAPost,
+};
