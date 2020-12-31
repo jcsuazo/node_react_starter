@@ -8,6 +8,7 @@ import {
   deleteUser,
   getUserById,
   updateUser,
+  getUserByUsername,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 const router = express.Router();
@@ -29,6 +30,11 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+// @desc    Get user by usename
+// @route   GET /api/users/:usename/username
+// @access  Private
+router.route('/:id/username').get(protect, getUserById);
 
 // @desc    Delete user by ID | Get user by ID | Update user by ID
 // @route   DELETE /api/users/:id | GET /api/users/:id | PUT /api/user/:id

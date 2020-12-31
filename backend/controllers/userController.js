@@ -139,6 +139,19 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get user by usename
+// @route   GET /api/users/:usename/username
+// @access  Private
+const getUserByUsername = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.usename).select('-password');
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
 // @desc    Update user
 // @route   PUT /api/user/:id
 // @access  Private/Admin
@@ -177,4 +190,5 @@ export {
   deleteUser,
   getUserById,
   updateUser,
+  getUserByUsername,
 };

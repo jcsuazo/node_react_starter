@@ -1,103 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../components/Message';
+import { useEffect } from 'react';
+import Meta from '../components/Meta';
+import SideBar from '../components/SideBar';
+import { getPostDetails } from '../actions/postActions';
 import Loader from '../components/Loader';
-import { getUserDetails, updateUserProfile } from '../actions/userActions';
+import Post from '../components/Post';
 
-const ProfileScreen = ({ location, history }) => {
-  //Get State
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState(null);
-
+const ProfileScreen = ({ match, history }) => {
   const dispatch = useDispatch();
+  const username = match.params.username;
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
+  const createPost = useSelector((state) => state.createPost);
+  const { post: postChanges } = createPost;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  const { success } = userUpdateProfile;
+  const postDetails = useSelector((state) => state.postDetails);
+  const { loading, post, success } = postDetails;
+
+  const likePost = useSelector((state) => state.likePost);
+  const { likedPost } = likePost;
+
+  const retweetedPost = useSelector((state) => state.retweetedPost);
+  const { retweetePost } = retweetedPost;
 
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
-    } else {
-      if (!user.name) {
-        dispatch(getUserDetails('profile'));
-      } else {
-        setName(user.name);
-        setEmail(user.email);
-      }
     }
-  }, [dispatch, history, userInfo, user]);
+    // dispatch(getPostDetails(id));
+  }, [
+    dispatch,
+    username,
+    history,
+    userInfo,
+    postChanges,
+    likedPost,
+    retweetePost,
+  ]);
 
-  //Handlers
-  const submitHandler = (e) => {
-    e.preventDefault();
-    //DISPATCH UPDATE PROFILE
-    if (password !== confirmPassword) {
-      setMessage('Passwords do not match');
-    } else {
-      dispatch(updateUserProfile({ id: user._id, name, email, password }));
-    }
-  };
+  function showPostDetails() {
+    return (
+      <div className='wrapper'>
+        <div className='row row-full'>
+          <div className='col-2'>
+            <SideBar history={history} />
+          </div>
+          <div className='mainSectionContainer col-10 col-md-8 col-lg-6'>
+            <div className='titleContainer'>
+              <h1>Profile: {username ? username : userInfo.username}</h1>
+            </div>
+          </div>
+          <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>
+            <p>third column</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
-    <Row>
-      <Col>
-        <h2>User Profile</h2>
-        {message && <Message variant='danger'>{message}</Message>}
-        {error && <Message variant='danger'>{error}</Message>}
-        {success && <Message variant='success'>Profile Updated</Message>}
-        {loading && <Loader />}
-        <Form onSubmit={submitHandler}>
-          <Form.Group controlId='name'>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type='name'
-              placeholder='Enter name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='email'>
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type='email'
-              placeholder='Enter email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='password'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group controlId='confirmPassword'>
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Button type='submit' variant='primary'>
-            Update
-          </Button>
-        </Form>
-      </Col>
-    </Row>
+    <>
+      <Meta />
+      {showPostDetails()}
+    </>
   );
 };
 
