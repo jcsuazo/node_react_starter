@@ -1,39 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { useEffect } from 'react';
 import Meta from '../components/Meta';
 import SideBar from '../components/SideBar';
-import CreatePostForm from '../components/CreatePostForm';
-import { listAllPosts } from '../actions/postActions';
-import ListPosts from '../components/ListPosts';
+import { getPostDetails } from '../actions/postActions';
 import Loader from '../components/Loader';
+import Post from '../components/Post';
 const PostDetailsScreen = ({ match, history }) => {
   const dispatch = useDispatch();
-  const keyword = match.params.keyword;
+  const id = match.params.id;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const listPosts = useSelector((state) => state.listPosts);
-  const { loading: loadingPosts, posts } = listPosts;
-
-  const createPost = useSelector((state) => state.createPost);
-  const { post } = createPost;
-
-  const likePost = useSelector((state) => state.likePost);
-  const { likedPost } = likePost;
-
-  const retweetedPost = useSelector((state) => state.retweetedPost);
-  const { retweetePost } = retweetedPost;
+  const postDetails = useSelector((state) => state.postDetails);
+  const { loading, post, success } = postDetails;
 
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     }
-    dispatch(listAllPosts());
-  }, [dispatch, history, userInfo, post, likedPost, retweetePost]);
+    dispatch(getPostDetails(id));
+  }, [dispatch, id, history, userInfo]);
 
   function showPostDetails() {
     return (
@@ -47,11 +35,11 @@ const PostDetailsScreen = ({ match, history }) => {
               <h1>View Post</h1>
             </div>
             {/* {userInfo && <CreatePostForm userLoggedIn={userInfo} />} */}
-            {/* {loadingPosts ? (
+            {loading ? (
               <Loader />
             ) : (
-              <ListPosts posts={posts} history={history} />
-            )} */}
+              success && <Post history={history} key={post._id} post={post} />
+            )}
           </div>
           <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>
             <p>third column</p>
@@ -63,13 +51,7 @@ const PostDetailsScreen = ({ match, history }) => {
   return (
     <>
       <Meta />
-      {!keyword ? (
-        showPostDetails()
-      ) : (
-        <Link to='/' className='btn btn-light'>
-          Go back
-        </Link>
-      )}
+      {showPostDetails()}
     </>
   );
 };

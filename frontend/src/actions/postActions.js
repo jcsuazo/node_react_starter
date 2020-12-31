@@ -12,6 +12,9 @@ import {
   POST_RETWEET_REQUEST,
   POST_RETWEET_SUCCESS,
   POST_RETWEET_FAIL,
+  POST_DETAILS_REQUEST,
+  POST_DETAILS_SUCCESS,
+  POST_DETAILS_FAIL,
 } from '../constants/postConstans';
 
 export const createAPost = (postPayload) => async (dispatch, getState) => {
@@ -131,6 +134,37 @@ export const retweetAPost = (postId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: POST_RETWEET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getPostDetails = (postId) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: POST_DETAILS_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(`/api/posts/${postId}`, {}, config);
+    dispatch({
+      type: POST_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: POST_DETAILS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

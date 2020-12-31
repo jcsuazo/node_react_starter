@@ -7,8 +7,8 @@ import Meta from '../components/Meta';
 import SideBar from '../components/SideBar';
 import CreatePostForm from '../components/CreatePostForm';
 import { listAllPosts } from '../actions/postActions';
-import ListPosts from '../components/ListPosts';
 import Loader from '../components/Loader';
+import Post from '../components/Post';
 const HomeScreen = ({ match, history }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
@@ -50,7 +50,10 @@ const HomeScreen = ({ match, history }) => {
             {loadingPosts ? (
               <Loader />
             ) : (
-              <ListPosts posts={posts} history={history} />
+              posts &&
+              posts.map((post) => (
+                <Post history={history} key={post._id} post={post} />
+              ))
             )}
           </div>
           <div className='d-none d-md-block col-md-2 col-lg-4 bg-info'>
