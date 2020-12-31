@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { likeAPost, retweetAPost, createAPost } from '../actions/postActions';
+import {
+  likeAPost,
+  retweetAPost,
+  createAPost,
+  deletePost,
+} from '../actions/postActions';
 import { Button, Modal } from 'react-bootstrap';
 const Post = ({ post, isModel = false, history, largeFont = false }) => {
   const dispatch = useDispatch();
@@ -13,6 +18,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
   //HELPER
   function isRetweet(post) {
     return post.retweetData !== undefined;
@@ -85,7 +91,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
   );
   const deletePostModal = (
     <Modal show={deletePostShow} onHide={() => handleClose('deletePost')}>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={(e) => submitHandler(e, 'deletePost')}>
         <Modal.Header closeButton>
           <Modal.Title>Delete Post?</Modal.Title>
         </Modal.Header>
@@ -164,6 +170,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
         setReplyShow(false);
         break;
       case 'deletePost':
+        dispatch(deletePost(modalPost._id));
         setDeletePostShow(false);
         break;
 

@@ -36,8 +36,7 @@ const getPostDetails = asyncHandler(async (req, res) => {
 const deleteAPost = asyncHandler(async (req, res) => {
   let postId = req.params.id;
   const post = await Post.findById(postId);
-
-  if (post.postedBy._id === req.user._id) {
+  if (post.postedBy._id.toString() == req.user._id.toString()) {
     await post.remove();
     res.sendStatus(202);
   } else {

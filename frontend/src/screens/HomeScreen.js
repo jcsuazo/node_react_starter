@@ -28,12 +28,23 @@ const HomeScreen = ({ match, history }) => {
   const retweetedPost = useSelector((state) => state.retweetedPost);
   const { retweetePost } = retweetedPost;
 
+  const postDelete = useSelector((state) => state.postDelete);
+  const { success: deletePostSucess } = postDelete;
+
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     }
     dispatch(listAllPosts());
-  }, [dispatch, history, userInfo, post, likedPost, retweetePost]);
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    post,
+    likedPost,
+    retweetePost,
+    deletePostSucess,
+  ]);
 
   function showHomeScreen() {
     return (

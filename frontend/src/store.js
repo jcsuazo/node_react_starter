@@ -16,6 +16,7 @@ import {
   likePostReducer,
   retweetedPostReducer,
   postDetailsReducer,
+  postDeleteReducer,
 } from './reducers/postReducer';
 import { toggleFooterReducer } from './reducers/pageReducer';
 
@@ -33,6 +34,7 @@ const reducer = combineReducers({
   likePost: likePostReducer,
   retweetedPost: retweetedPostReducer,
   postDetails: postDetailsReducer,
+  postDelete: postDeleteReducer,
 });
 
 //Set user info to the state if it is on local storage
