@@ -7,7 +7,9 @@ import generateToken from '../utils/generateToken.js';
 // @route   GET /api/posts
 // @access  Private
 const getAllPosts = asyncHandler(async (req, res) => {
-  const results = await getPosts({});
+  let searchObj = req.query;
+  console.log(searchObj);
+  const results = await getPosts(searchObj);
   res.status(200).send(results);
 });
 
@@ -30,8 +32,8 @@ const getPostDetails = asyncHandler(async (req, res) => {
   res.status(200).send(results);
 });
 
-// @desc    Get a post details
-// @route   GET /api/posts/:id
+// @desc    Remove a post
+// @route   PUT /api/posts/:id
 // @access  Private
 const deleteAPost = asyncHandler(async (req, res) => {
   let postId = req.params.id;

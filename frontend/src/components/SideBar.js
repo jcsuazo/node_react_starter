@@ -11,7 +11,7 @@ const SideBar = ({ history }) => {
     history.push('/login');
   };
   return (
-    <nav>
+    <nav className='myNav'>
       <Link to='/'>
         <i className='fas fa-dove'></i>
       </Link>

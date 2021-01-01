@@ -12,6 +12,11 @@ const postSchema = mongoose.Schema(
       ref: 'User',
     },
     pinned: Boolean,
+    isReply: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -50,7 +50,10 @@ export const createAPost = (postPayload) => async (dispatch, getState) => {
   }
 };
 
-export const listAllPosts = () => async (dispatch, getState) => {
+export const listAllPosts = (searchQuery = {}) => async (
+  dispatch,
+  getState,
+) => {
   try {
     dispatch({
       type: POST_LIST_REQUEST,
@@ -62,6 +65,7 @@ export const listAllPosts = () => async (dispatch, getState) => {
       headers: {
         Authorization: `Bearer ${userInfo.token}`,
       },
+      params: searchQuery,
     };
     const { data } = await axios.get(`/api/posts`, config);
     dispatch({

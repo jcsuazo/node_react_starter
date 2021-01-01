@@ -21,7 +21,7 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
 
   //HELPER
   function isRetweet(post) {
-    return post.retweetData !== undefined;
+    return post.retweetData !== undefined && post.retweetData !== null;
   }
   const handleClose = (type) => {
     switch (type) {
@@ -38,6 +38,64 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
     }
     setmodalPost(null);
   };
+
+  // HANDELERS
+  function likePostHandeler(PostId) {
+    dispatch(likeAPost(PostId));
+  }
+  function retweetPostHandeler(post) {
+    if (isRetweet(post)) {
+      dispatch(retweetAPost(post.retweetData._id));
+    } else {
+      dispatch(retweetAPost(post._id));
+    }
+  }
+  function postHandeler(e) {
+    e.preventDefault();
+    if (e.target.nodeName !== 'BUTTON' && e.target.nodeName !== 'A') {
+      history.push(`/post/${post._id}`);
+    }
+  }
+
+  function toogleModal(post, type) {
+    setmodalPost(post);
+    switch (type) {
+      case 'reply':
+        setReplyShow(true);
+
+        break;
+      case 'deletePost':
+        setDeletePostShow(true);
+        break;
+
+      default:
+        setReplyShow(true);
+        break;
+    }
+  }
+  function submitHandler(e, type) {
+    e.preventDefault();
+    switch (type) {
+      case 'reply':
+        dispatch(
+          createAPost({
+            content: modelContent,
+            replyTo: modalPost._id,
+            isReply: true,
+          }),
+        );
+        setReplyShow(false);
+        break;
+      case 'deletePost':
+        dispatch(deletePost(modalPost._id));
+        setDeletePostShow(false);
+        break;
+
+      default:
+        setReplyShow(false);
+        break;
+    }
+  }
   // HTML
 
   const deletePostButton = (
@@ -126,59 +184,6 @@ const Post = ({ post, isModel = false, history, largeFont = false }) => {
     </Modal>
   );
 
-  // HANDELERS
-  function likePostHandeler(PostId) {
-    dispatch(likeAPost(PostId));
-  }
-  function retweetPostHandeler(post) {
-    if (isRetweet(post)) {
-      dispatch(retweetAPost(post.retweetData._id));
-    } else {
-      dispatch(retweetAPost(post._id));
-    }
-  }
-  function postHandeler(e) {
-    e.preventDefault();
-    if (e.target.nodeName !== 'BUTTON' && e.target.nodeName !== 'A') {
-      history.push(`/post/${post._id}`);
-    }
-  }
-
-  function toogleModal(post, type) {
-    setmodalPost(post);
-    switch (type) {
-      case 'reply':
-        setReplyShow(true);
-
-        break;
-      case 'deletePost':
-        setDeletePostShow(true);
-        break;
-
-      default:
-        setReplyShow(true);
-        break;
-    }
-  }
-  function submitHandler(e, type) {
-    e.preventDefault();
-    switch (type) {
-      case 'reply':
-        dispatch(
-          createAPost({ content: modelContent, replyTo: modalPost._id }),
-        );
-        setReplyShow(false);
-        break;
-      case 'deletePost':
-        dispatch(deletePost(modalPost._id));
-        setDeletePostShow(false);
-        break;
-
-      default:
-        setReplyShow(false);
-        break;
-    }
-  }
   return (
     <>
       {replyModal}

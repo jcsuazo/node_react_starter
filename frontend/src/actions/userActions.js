@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { listAllPosts } from './postActions';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -25,6 +26,9 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_BY_USERNAME_REQUEST,
+  USER_BY_USERNAME_SUCCESS,
+  USER_BY_USERNAME_FAIL,
 } from '../constants/userConstants';
 
 export const login = (loginPayload) => async (dispatch, getState) => {
@@ -239,6 +243,37 @@ export const updateUser = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getUserByUsername = (username) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_BY_USERNAME_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/users/${username}/username`, config);
+    dispatch({
+      type: USER_BY_USERNAME_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_BY_USERNAME_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

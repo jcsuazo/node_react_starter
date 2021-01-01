@@ -9,6 +9,7 @@ import {
   userListReducer,
   userDeleteReducer,
   userUpdateReducer,
+  userByUsernameReducer,
 } from './reducers/userReducers';
 import {
   createPostReducer,
@@ -28,6 +29,7 @@ const reducer = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   userUpdate: userUpdateReducer,
+  userByUsername: userByUsernameReducer,
   toggleFooter: toggleFooterReducer,
   createPost: createPostReducer,
   listPosts: listPostsReducer,

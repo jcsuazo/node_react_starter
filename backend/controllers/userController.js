@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
+import Post from '../models/postModel.js';
 import generateToken from '../utils/generateToken.js';
 
 // @desc    Auth user & get token
@@ -143,9 +144,21 @@ const getUserById = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:usename/username
 // @access  Private
 const getUserByUsername = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.usename).select('-password');
+  let user = await User.findOne({ username: req.params.username }).select(
+    '-password',
+  );
+  if (!user) {
+    user = req.user;
+  }
+  const replyTo = await getPosts({ postedBy: user._id, isReply: true });
+  const posts = await getPosts({ postedBy: user._id, isReply: false });
+  const results = {
+    user,
+    replyTo,
+    posts,
+  };
   if (user) {
-    res.json(user);
+    res.status(200).send(results);
   } else {
     res.status(404);
     throw new Error('User not found');
@@ -180,7 +193,17 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
-
+async function getPosts(filter) {
+  let results = await Post.find(filter)
+    .populate('postedBy')
+    .populate('replyTo')
+    .populate('retweetData')
+    .sort({ createdAt: -1 })
+    .catch((error) => console.log(error));
+  results = await User.populate(results, { path: 'replyTo.postedBy' });
+  // results = await Post.populate(results, { path: 'replyTo.retweetData' });
+  return await User.populate(results, { path: 'retweetData.postedBy' });
+}
 export {
   authUser,
   getUserProfile,
