@@ -30,7 +30,7 @@ const SideBar = ({ history }) => {
       <Link to='/'>
         <i className='fas fa-envelope'></i>
       </Link>
-      <Link to={`/profile/${userInfo.username}`}>
+      <Link to={`/profile/${userInfo ? userInfo.username : ''}`}>
         <i className='fas fa-user'></i>
       </Link>
       <Link to='/login' onClick={logoutHandler}>
