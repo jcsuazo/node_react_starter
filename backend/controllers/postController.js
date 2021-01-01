@@ -8,7 +8,6 @@ import generateToken from '../utils/generateToken.js';
 // @access  Private
 const getAllPosts = asyncHandler(async (req, res) => {
   let searchObj = req.query;
-  console.log(searchObj);
   const results = await getPosts(searchObj);
   res.status(200).send(results);
 });

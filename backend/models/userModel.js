@@ -44,6 +44,18 @@ const userSchema = mongoose.Schema(
         ref: 'Post',
       },
     ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
     isAdmin: {
       type: Boolean,
       required: true,
