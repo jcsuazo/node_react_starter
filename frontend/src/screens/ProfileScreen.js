@@ -44,6 +44,8 @@ const ProfileScreen = ({ match, history }) => {
     }
     if (username) {
       dispatch(getUserByUsername(username));
+    } else {
+      history.push('/');
     }
   }, [
     dispatch,
@@ -71,98 +73,110 @@ const ProfileScreen = ({ match, history }) => {
           <div className='col-2'>
             <SideBar history={history} />
           </div>
-          {profileUserSuccess && (
-            <div className='mainSectionContainer col-10 col-md-8 col-lg-6'>
-              <div className='titleContainer'>
-                <h1>Profile: {profileUser.user.username}</h1>
-              </div>
-              <div className='profileHeaderContainer'>
-                <div className='coverPhotoContainer'>
-                  <div className='myUserImageContainer'>
-                    <img
-                      src={profileUser.user.profilePic}
-                      alt='Users profile'
-                    />
+          {loading ? (
+            <Loader />
+          ) : (
+            profileUserSuccess && (
+              <div className='mainSectionContainer col-10 col-md-8 col-lg-6'>
+                <div className='titleContainer'>
+                  <h1>Profile: {profileUser.user.username}</h1>
+                </div>
+                <div className='profileHeaderContainer'>
+                  <div className='coverPhotoContainer'>
+                    <div className='myUserImageContainer'>
+                      <img
+                        src={profileUser.user.profilePic}
+                        alt='Users profile'
+                      />
+                    </div>
+                  </div>
+                  <div className='profileButtonsContainer'>
+                    <Link
+                      className='profuleButton myEnvelope'
+                      to={`/messages/${profileUser.user._id}`}
+                    >
+                      <svg
+                        className='myEnvelopeSize'
+                        data-darkreader-inline-fill=''
+                        data-darkreader-inline-stroke=''
+                        viewBox='0 0 24 24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth='2'
+                          d='M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
+                        ></path>
+                      </svg>
+                    </Link>
+                    {followButton}
+                  </div>
+                  <div className='userDetailsContainer'>
+                    <span className='displayName'>
+                      {`${profileUser.user.firstName} ${profileUser.user.lastName}`}
+                    </span>
+                    <span className='username'>
+                      {' '}
+                      @{profileUser.user.username}
+                    </span>
+                    <span className='description'>
+                      {' '}
+                      {profileUser.user.description}
+                    </span>
+                    <div className='followersContainer'>
+                      <Link
+                        to={`/profile/${profileUser.user.username}/following`}
+                      >
+                        <span className='value'>0</span>
+                        <span>Following</span>
+                      </Link>
+                      <Link
+                        to={`/profile/${profileUser.user.username}/followers`}
+                      >
+                        <span className='value'>0</span>
+                        <span>Followers</span>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className='myTabsContainer'>
+                    <Tabs
+                      id='controlled-tab-example'
+                      activeKey={key}
+                      onSelect={(k) => setKey(k)}
+                      defaultActiveKey='Posts'
+                    >
+                      <Tab eventKey='Posts' title='Posts'>
+                        {loading ? (
+                          <Loader />
+                        ) : (
+                          profileUser.posts.map((post) => (
+                            <Post
+                              history={history}
+                              key={post._id}
+                              post={post}
+                            />
+                          ))
+                        )}
+                      </Tab>
+                      <Tab eventKey='Replies' title='Replies'>
+                        {loading ? (
+                          <Loader />
+                        ) : (
+                          profileUser.replyTo.map((post) => (
+                            <Post
+                              history={history}
+                              key={post._id}
+                              post={post}
+                            />
+                          ))
+                        )}
+                      </Tab>
+                    </Tabs>
                   </div>
                 </div>
-                <div className='profileButtonsContainer'>
-                  <Link
-                    className='profuleButton myEnvelope'
-                    to={`/messages/${profileUser.user._id}`}
-                  >
-                    <svg
-                      className='myEnvelopeSize'
-                      data-darkreader-inline-fill=''
-                      data-darkreader-inline-stroke=''
-                      viewBox='0 0 24 24'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth='2'
-                        d='M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
-                      ></path>
-                    </svg>
-                  </Link>
-                  {followButton}
-                </div>
-                <div className='userDetailsContainer'>
-                  <span className='displayName'>
-                    {`${profileUser.user.firstName} ${profileUser.user.lastName}`}
-                  </span>
-                  <span className='username'>
-                    {' '}
-                    @{profileUser.user.username}
-                  </span>
-                  <span className='description'>
-                    {' '}
-                    {profileUser.user.description}
-                  </span>
-                  <div className='followersContainer'>
-                    <Link
-                      to={`/profile/${profileUser.user.username}/following`}
-                    >
-                      <span className='value'>0</span>
-                      <span>Following</span>
-                    </Link>
-                    <Link
-                      to={`/profile/${profileUser.user.username}/followers`}
-                    >
-                      <span className='value'>0</span>
-                      <span>Followers</span>
-                    </Link>
-                  </div>
-                </div>
-                <div className='myTabsContainer'>
-                  <Tabs
-                    id='controlled-tab-example'
-                    activeKey={key}
-                    onSelect={(k) => setKey(k)}
-                    defaultActiveKey='Posts'
-                  >
-                    <Tab eventKey='Posts' title='Posts'>
-                      {loading ? (
-                        <Loader />
-                      ) : (
-                        profileUser.posts.map((post) => (
-                          <Post history={history} key={post._id} post={post} />
-                        ))
-                      )}
-                    </Tab>
-                    <Tab eventKey='Replies' title='Replies'>
-                      {loading ? (
-                        <Loader />
-                      ) : (
-                        profileUser.replyTo.map((post) => (
-                          <Post history={history} key={post._id} post={post} />
-                        ))
-                      )}
-                    </Tab>
-                  </Tabs>
-                </div>
               </div>
-            </div>
+            )
           )}
           <div className='d-none d-md-block col-md-2 col-lg-4'>
             <p>third column</p>

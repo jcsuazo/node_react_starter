@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { logout } from '../actions/userActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const SideBar = ({ history }) => {
   const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   //HANDLERS
   const logoutHandler = (e) => {
     e.preventDefault();
@@ -27,7 +30,7 @@ const SideBar = ({ history }) => {
       <Link to='/'>
         <i className='fas fa-envelope'></i>
       </Link>
-      <Link to='/profile'>
+      <Link to={`/profile/${userInfo.username}`}>
         <i className='fas fa-user'></i>
       </Link>
       <Link to='/login' onClick={logoutHandler}>
