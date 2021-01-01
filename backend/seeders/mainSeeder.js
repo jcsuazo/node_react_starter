@@ -74,28 +74,40 @@ const importData = async () => {
     }
     for (let i = 0; i < allPosts.length; i++) {
       const post = allPosts[i];
-      // const retweet = retweetData[i];
-      // const randomUser = getRandomItem(createdUsers)
-      // console.log(ramdonUser._id);
       let userLikes = [
         myUser._id,
         getRandomItem(createdUsers)._id,
         getRandomItem(createdUsers)._id,
         getRandomItem(createdUsers)._id,
       ];
-      // console.log(`post_id: ${post._id}`);
       const likePost = await Posts.findByIdAndUpdate(
         post._id,
         {
           $addToSet: {
-            // likes: myUser._id,
             likes: { $each: userLikes },
           },
         },
         { new: true },
       );
-      console.log(likePost);
     }
+    for (let i = 0; i < createdUsers.length; i++) {
+      const logInUser = createdUsers[i];
+      let ids = [
+        getRandomItem(createdUsers)._id,
+        getRandomItem(createdUsers)._id,
+        getRandomItem(createdUsers)._id,
+      ];
+      const currentUser = await User.findByIdAndUpdate(logInUser._id, {
+        $addToSet: { following: { $each: ids } },
+      });
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        const followingUser = await User.findByIdAndUpdate(id, {
+          $addToSet: { followers: logInUser._id },
+        });
+      }
+    }
+
     console.log('Data Imported!'.green.inverse);
     process.exit();
   } catch (error) {

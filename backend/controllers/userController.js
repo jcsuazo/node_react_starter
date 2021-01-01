@@ -193,6 +193,30 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
+
+// @desc    Follow or un-follow another user
+// @route   PUT /api/users/:id/follow
+// @access  Private
+const followUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const logInUser = req.user;
+
+  let isLiked = logInUser.following && logInUser.following.includes(id);
+
+  let option = isLiked ? '$pull' : '$addToSet';
+  try {
+    const currentUser = await User.findByIdAndUpdate(logInUser._id, {
+      [option]: { following: id },
+    });
+    const followingUser = await User.findByIdAndUpdate(id, {
+      [option]: { followers: logInUser._id },
+    });
+  } catch (error) {
+    res.send(error);
+  }
+  res.sendStatus(200);
+});
+
 async function getPosts(filter) {
   let results = await Post.find(filter)
     .populate('postedBy')
@@ -214,4 +238,5 @@ export {
   getUserById,
   updateUser,
   getUserByUsername,
+  followUser,
 };

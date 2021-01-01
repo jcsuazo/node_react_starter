@@ -9,6 +9,7 @@ import {
   getUserById,
   updateUser,
   getUserByUsername,
+  followUser,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 const router = express.Router();
@@ -35,6 +36,11 @@ router
 // @route   GET /api/users/:usename/username
 // @access  Private
 router.route('/:username/username').get(protect, getUserByUsername);
+
+// @desc    Follow or un-follow another user
+// @route   PUT /api/users/:id/follow
+// @access  Private
+router.route('/:id/follow').put(protect, followUser);
 
 // @desc    Delete user by ID | Get user by ID | Update user by ID
 // @route   DELETE /api/users/:id | GET /api/users/:id | PUT /api/user/:id
